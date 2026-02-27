@@ -1,6 +1,5 @@
 import React from 'react';
 import { Label } from '../ui/label';
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 
 interface SurveyFieldProps {
   label: string;
@@ -34,33 +33,36 @@ export function SurveyField({
       {description && (
         <p className="text-sm text-gray-500">{description}</p>
       )}
-      <div className="border rounded-md p-4 space-y-4">
-        <div className="grid gap-4">
+      <table className="w-full border-collapse rounded-md overflow-hidden border border-border">
+        <thead>
+          <tr className="bg-white">
+            <th className="border px-4 py-3 text-left font-normal" />
+            {options.map((option) => (
+              <th key={option} className="border px-4 py-3 text-center font-semibold text-sm">
+                {option}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
           {questions.map((question, idx) => (
-            <div key={idx} className="space-y-2">
-              <Label className="text-sm">{question}</Label>
-              <RadioGroup
-                value={value[question]}
-                onValueChange={(answer) => handleChange(question, answer)}
-              >
-                <div className="flex gap-4">
-                  {options.map((option) => (
-                    <div key={option} className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value={option}
-                        id={`${idx}-${option}`}
-                      />
-                      <Label htmlFor={`${idx}-${option}`} className="cursor-pointer text-sm">
-                        {option}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </RadioGroup>
-            </div>
+            <tr key={idx} className={idx % 2 === 0 ? "bg-[#F9F9F9]" : "bg-white"}>
+              <td className="border px-4 py-3 text-sm font-medium">{question}</td>
+              {options.map((option) => (
+                <td key={option} className="border px-4 py-3 text-center">
+                  <input
+                    type="radio"
+                    name={`survey-${label}-${idx}`}
+                    checked={value[question] === option}
+                    onChange={() => handleChange(question, option)}
+                    className="size-4 accent-primary cursor-pointer"
+                  />
+                </td>
+              ))}
+            </tr>
           ))}
-        </div>
-      </div>
+        </tbody>
+      </table>
     </div>
   );
 }

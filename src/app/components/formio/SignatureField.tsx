@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Label } from '../ui/label';
-import { Button } from '../ui/button';
+import { RefreshCw } from 'lucide-react';
 
 interface SignatureFieldProps {
   label: string;
@@ -32,24 +32,33 @@ export function SignatureField({
     }
   }, [value]);
 
+  const getCanvasCoords = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  };
+
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     setIsDrawing(true);
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-    if (ctx && canvas) {
-      const rect = canvas.getBoundingClientRect();
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) {
+      const { x, y } = getCanvasCoords(e);
       ctx.beginPath();
-      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.moveTo(x, y);
     }
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-    if (ctx && canvas) {
-      const rect = canvas.getBoundingClientRect();
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) {
+      const { x, y } = getCanvasCoords(e);
+      ctx.lineTo(x, y);
       ctx.stroke();
     }
   };
@@ -77,29 +86,30 @@ export function SignatureField({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
-      <div className="border rounded-md p-2">
+      <div className="relative">
+        <button
+          type="button"
+          onClick={clearSignature}
+          className="absolute top-2 left-2 z-10 text-muted-foreground hover:text-foreground"
+          aria-label="Clear signature"
+        >
+          <RefreshCw className="size-4" />
+        </button>
         <canvas
           ref={canvasRef}
           width={400}
-          height={150}
-          className="border border-gray-300 rounded cursor-crosshair bg-white w-full"
+          height={75}
+          className="rounded-md cursor-crosshair w-full"
+          style={{ backgroundColor: '#F5F5EC' }}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
         />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={clearSignature}
-          className="mt-2"
-        >
-          Clear
-        </Button>
+        <p className="text-sm text-muted-foreground text-center mt-1">Sign above</p>
       </div>
       {description && (
-        <p className="text-sm text-gray-500">{description}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>
       )}
     </div>
   );

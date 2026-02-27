@@ -5,9 +5,21 @@ interface ColumnsFieldProps {
   children: React.ReactNode;
 }
 
+function flattenChildren(children: React.ReactNode): React.ReactNode[] {
+  const result: React.ReactNode[] = [];
+  React.Children.forEach(children, (child) => {
+    if (React.isValidElement(child) && child.type === React.Fragment) {
+      result.push(...flattenChildren(child.props.children));
+    } else {
+      result.push(child);
+    }
+  });
+  return result;
+}
+
 export function ColumnsField({ columns, children }: ColumnsFieldProps) {
-  const childArray = React.Children.toArray(children);
-  
+  const childArray = flattenChildren(children);
+
   return (
     <div
       className="grid gap-4"

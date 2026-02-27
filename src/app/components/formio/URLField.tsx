@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
@@ -19,6 +19,9 @@ export function URLField({
   value,
   onChange
 }: URLFieldProps) {
+  const [touched, setTouched] = useState(false);
+  const hasError = touched && !!value && !/^https?:\/\/.+\..+/.test(value);
+
   return (
     <div className="space-y-2">
       <Label>
@@ -30,8 +33,13 @@ export function URLField({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
+        onBlur={() => setTouched(true)}
+        className={hasError ? 'border-destructive' : ''}
       />
-      {description && (
+      {hasError && (
+        <p className="text-sm text-destructive">Url must be a valid url.</p>
+      )}
+      {!hasError && description && (
         <p className="text-sm text-gray-500">{description}</p>
       )}
     </div>

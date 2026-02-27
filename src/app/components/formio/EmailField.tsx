@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
@@ -19,6 +19,9 @@ export function EmailField({
   value,
   onChange
 }: EmailFieldProps) {
+  const [touched, setTouched] = useState(false);
+  const hasError = touched && !!value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
   return (
     <div className="space-y-2">
       <Label>
@@ -30,8 +33,13 @@ export function EmailField({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
+        onBlur={() => setTouched(true)}
+        className={hasError ? 'border-destructive' : ''}
       />
-      {description && (
+      {hasError && (
+        <p className="text-sm text-destructive">Email must be a valid email.</p>
+      )}
+      {!hasError && description && (
         <p className="text-sm text-gray-500">{description}</p>
       )}
     </div>

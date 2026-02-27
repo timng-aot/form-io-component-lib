@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
@@ -19,6 +19,9 @@ export function PhoneField({
   value,
   onChange
 }: PhoneFieldProps) {
+  const [touched, setTouched] = useState(false);
+  const hasError = touched && !!value && !/^\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(value);
+
   return (
     <div className="space-y-2">
       <Label>
@@ -30,8 +33,13 @@ export function PhoneField({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
+        onBlur={() => setTouched(true)}
+        className={hasError ? 'border-destructive' : ''}
       />
-      {description && (
+      {hasError && (
+        <p className="text-sm text-destructive">Phone Number does not match the mask.</p>
+      )}
+      {!hasError && description && (
         <p className="text-sm text-gray-500">{description}</p>
       )}
     </div>

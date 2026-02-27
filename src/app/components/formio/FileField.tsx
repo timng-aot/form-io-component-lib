@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { Label } from '../ui/label';
-import { Button } from '../ui/button';
-import { Upload, X } from 'lucide-react';
+import { CloudUpload, X } from 'lucide-react';
 
 interface FileFieldProps {
   label: string;
@@ -41,44 +40,53 @@ export function FileField({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
-      <div className="space-y-2">
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleFileChange}
-          className="hidden"
-        />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => inputRef.current?.click()}
-          className="w-full"
-        >
-          <Upload className="h-4 w-4 mr-2" />
-          Choose File{multiple ? 's' : ''}
-        </Button>
-        {value.length > 0 && (
-          <div className="space-y-2">
-            {value.map((file, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between p-2 border rounded-md"
-              >
-                <span className="text-sm truncate">{file.name}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeFile(idx)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        multiple={multiple}
+        onChange={handleFileChange}
+        className="hidden"
+      />
+      {/* File list table */}
+      <div className="border rounded-md overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr>
+              <th className="px-4 py-2 text-left text-sm font-semibold">File Name</th>
+              <th className="px-4 py-2 text-right text-sm font-semibold">Size</th>
+            </tr>
+          </thead>
+          {value.length > 0 && (
+            <tbody>
+              {value.map((file, idx) => (
+                <tr key={idx} className="border-t">
+                  <td className="px-4 py-2 text-sm">{file.name}</td>
+                  <td className="px-4 py-2 text-sm text-right whitespace-nowrap">
+                    <span>{(file.size / 1024).toFixed(1)} KB</span>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(idx)}
+                      className="ml-2 text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="size-4 inline" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
+        </table>
+      </div>
+      {/* Drop zone */}
+      <div
+        className="border-2 border-dashed rounded-md py-6 flex items-center justify-center gap-2 cursor-pointer hover:border-muted-foreground transition-colors"
+        onClick={() => inputRef.current?.click()}
+      >
+        <CloudUpload className="size-5" />
+        <span className="text-sm">
+          Drop files to attach, or <span className="underline font-medium">browse</span>
+        </span>
       </div>
       {description && (
         <p className="text-sm text-gray-500">{description}</p>

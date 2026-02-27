@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Button } from './components/ui/button';
-import { Settings } from 'lucide-react';
+import { Settings, FileText } from 'lucide-react';
 
 // Basic Components
 import { TextField } from './components/formio/TextField';
@@ -26,6 +27,7 @@ import { SignatureField } from './components/formio/SignatureField';
 import { SurveyField } from './components/formio/SurveyField';
 import { TimeField } from './components/formio/TimeField';
 import { AddressField } from './components/formio/AddressField';
+import { DayField } from './components/formio/DayField';
 
 // Layout Components
 import { PanelField } from './components/formio/PanelField';
@@ -41,7 +43,7 @@ import { FileField } from './components/formio/FileField';
 import { Input } from './components/ui/input';
 
 // Customization
-import { CustomizationPanel, CustomizationSettings } from './components/CustomizationPanel';
+import { CustomizationPanel, CustomizationSettings, getContrastColor } from './components/CustomizationPanel';
 import { CustomizationProvider } from './components/CustomizationContext';
 
 const HEADER_FONTS: Record<string, string> = {
@@ -76,21 +78,23 @@ export default function App() {
     headerFont: 'sans',
     bodyFont: 'sans',
     buttonStyle: 'rounded',
-    backgroundColor: '#F9FAFB',
-    buttonColor: '#3B82F6',
-    headerTextColor: '#000000',
+    backgroundColor: '#FFFFFF',
+    buttonColor: '#000000',
+    accentColor: '#4A4A4A',
   });
 
   const handleSettingsChange = (newSettings: CustomizationSettings) => {
     setSettings(newSettings);
   };
 
+  const customizeBtnTextColor = getContrastColor(settings.buttonColor);
+
   return (
     <CustomizationProvider value={settings}>
       <div className="flex h-screen overflow-hidden">
         {/* Main Content */}
-        <div 
-          className="flex-1 overflow-y-auto p-6"
+        <div
+          className="flex-1 overflow-y-scroll p-6"
           style={{
             backgroundColor: settings.backgroundColor,
             fontFamily: BODY_FONTS[settings.bodyFont],
@@ -99,14 +103,14 @@ export default function App() {
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Header */}
             <div className="text-center space-y-2">
-              <h1 
+              <h1
                 className="text-4xl"
                 style={{
                   fontFamily: HEADER_FONTS[settings.headerFont],
-                  color: settings.headerTextColor,
+                  color: settings.accentColor,
                 }}
               >
-                Form.io Component Library
+                formsflow Form.io Component Library
               </h1>
               <p className="text-gray-600">
                 A comprehensive collection of all Form.io components built with React and Tailwind CSS
@@ -114,15 +118,28 @@ export default function App() {
             </div>
 
             {/* Customize Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-center gap-2">
+              <Link to="/samples">
+                <Button
+                  variant="outline"
+                  style={{
+                    borderColor: settings.buttonColor,
+                    color: settings.buttonColor,
+                    borderRadius: settings.buttonStyle === 'pill' ? '9999px' : '0.3125rem',
+                  }}
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Sample Forms
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 onClick={() => setShowCustomization(!showCustomization)}
                 style={{
-                  backgroundColor: showCustomization ? settings.buttonColor : 'white',
-                  color: showCustomization ? 'white' : settings.buttonColor,
+                  backgroundColor: showCustomization ? settings.buttonColor : undefined,
+                  color: showCustomization ? customizeBtnTextColor : settings.buttonColor,
                   borderColor: settings.buttonColor,
-                  borderRadius: settings.buttonStyle === 'pill' ? '9999px' : '0.375rem',
+                  borderRadius: settings.buttonStyle === 'pill' ? '9999px' : '0.3125rem',
                 }}
               >
                 <Settings className="h-4 w-4 mr-2" />
@@ -299,6 +316,14 @@ export default function App() {
                         </div>
 
                         <div>
+                          <h3 className="text-lg mb-3">Day</h3>
+                          <DayField
+                            label="Day"
+                            description="Enter month, day, and year"
+                          />
+                        </div>
+
+                        <div>
                           <h3 className="text-lg mb-3">Time</h3>
                           <TimeField
                             label="Preferred Time"
@@ -353,7 +378,7 @@ export default function App() {
                           <SignatureField
                             label="Digital Signature"
                             required
-                            description="Sign in the box below"
+
                           />
                         </div>
 
@@ -552,19 +577,12 @@ export default function App() {
               </TabsContent>
             </Tabs>
 
-            {/* Footer */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center space-y-2">
-                  <p className="text-sm text-gray-600">
-                    This component library demonstrates all major Form.io components
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Built with React, TypeScript, Tailwind CSS, and shadcn/ui
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Footer - formsflow branding */}
+            <div className="text-center py-4">
+              <p className="text-sm text-gray-400">
+                Created by <span className="font-medium text-gray-500">formsflow.ai</span>
+              </p>
+            </div>
           </div>
         </div>
 

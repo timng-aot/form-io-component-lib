@@ -1,26 +1,26 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-size: 16px;
+  --font-size: 15px;
   --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
+  --foreground: #4A4A4A;
   --card: #ffffff;
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.0058 264.53);
-  --secondary-foreground: #030213;
-  --muted: #ececf0;
-  --muted-foreground: #717182;
+  --card-foreground: #4A4A4A;
+  --popover: #ffffff;
+  --popover-foreground: #4A4A4A;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #EDEDED;
+  --secondary-foreground: #4A4A4A;
+  --muted: #EDEDED;
+  --muted-foreground: #AFB4B6;
   --accent: #e9ebef;
-  --accent-foreground: #030213;
-  --destructive: #d4183d;
+  --accent-foreground: #4A4A4A;
+  --destructive: #D4183D;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1);
-  --input: transparent;
-  --input-background: #f3f3f5;
+  --border: #D1D2D3;
+  --input: #D1D2D3;
+  --input-background: #FFFFFF;
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
@@ -30,7 +30,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
+  --radius: 0.3125rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #030213;
@@ -39,6 +39,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Customizable channel tokens (set via JS at runtime) */
+  --ff-accent: #4A4A4A;
+  --ff-accent-foreground: #FFFFFF;
+  --ff-accent-light: #F6F6F6;
 }
 
 .dark {
@@ -126,6 +131,30 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Figtree', sans-serif;
+  }
+
+  /* Scrollbar styling — always visible, matches Card border radius */
+  *::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: var(--radius);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted-foreground);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
 
   /**

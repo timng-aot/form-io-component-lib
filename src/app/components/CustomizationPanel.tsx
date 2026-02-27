@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Paintbrush, Type, Circle, X } from 'lucide-react';
+import { Paintbrush, Type, X } from 'lucide-react';
 
 interface CustomizationPanelProps {
   onClose?: () => void;
@@ -19,11 +19,25 @@ export interface CustomizationSettings {
   buttonStyle: 'rounded' | 'pill';
   backgroundColor: string;
   buttonColor: string;
-  headerTextColor: string;
+  accentColor: string;
+}
+
+/**
+ * Returns white or black text color based on WCAG relative luminance of the background.
+ */
+export function getContrastColor(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+  const toLinear = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+
+  return luminance > 0.179 ? '#000000' : '#FFFFFF';
 }
 
 const HEADER_FONTS = [
-  { value: 'sans', label: 'Sans (Figtree)', family: 'Figtree, sans-serif' },
+  { value: 'sans', label: 'Sans', family: 'Figtree, sans-serif' },
   { value: 'serif', label: 'Serif', family: 'Georgia, serif' },
   { value: 'heavy-sans', label: 'Heavy Sans', family: 'Inter, sans-serif' },
   { value: 'mono', label: 'Mono', family: 'ui-monospace, monospace' },
@@ -31,54 +45,73 @@ const HEADER_FONTS = [
 ];
 
 const BODY_FONTS = [
-  { value: 'sans', label: 'Sans (Figtree)', family: 'Figtree, sans-serif' },
+  { value: 'sans', label: 'Sans', family: 'Figtree, sans-serif' },
   { value: 'serif', label: 'Serif', family: 'Georgia, serif' },
   { value: 'system', label: 'System', family: 'system-ui, sans-serif' },
   { value: 'mono', label: 'Mono', family: 'ui-monospace, monospace' },
 ];
 
 const BACKGROUND_COLORS = [
-  { name: 'White', value: '#FFFFFF', dark: false },
-  { name: 'Light Gray', value: '#F9FAFB', dark: false },
-  { name: 'Warm Gray', value: '#FAFAF9', dark: false },
-  { name: 'Cool Gray', value: '#F8FAFC', dark: false },
-  { name: 'Blue Tint', value: '#F0F9FF', dark: false },
-  { name: 'Green Tint', value: '#F0FDF4', dark: false },
-  { name: 'Purple Tint', value: '#FAF5FF', dark: false },
-  { name: 'Pink Tint', value: '#FDF2F8', dark: false },
+  // Row 1: Neutrals & warm pastels
+  { name: 'White', value: '#FFFFFF' },
+  { name: 'Light Gray', value: '#F9F9F9' },
+  { name: 'Rose Tint', value: '#FEF0F0' },
+  { name: 'Pink Tint', value: '#FCF1F7' },
+  { name: 'Violet Tint', value: '#F9F4FF' },
+  { name: 'Magenta Tint', value: '#FCF3FF' },
+  { name: 'Lavender Tint', value: '#F0E6FE' },
+  // Row 2: Cool pastels
+  { name: 'Indigo Tint', value: '#ECF0FE' },
+  { name: 'Blue Tint', value: '#EDF4FF' },
+  { name: 'Sky Tint', value: '#EEF8FF' },
+  { name: 'Cyan Tint', value: '#EBFDFF' },
+  { name: 'Teal Tint', value: '#EFFCF9' },
+  { name: 'Mint Tint', value: '#EBFCF4' },
+  { name: 'Lime Tint', value: '#F6FDE5' },
+  // Row 3: Warm & dark
+  { name: 'Amber Tint', value: '#FEF6EB' },
+  { name: 'Salmon Tint', value: '#FDF1F0' },
+  { name: 'Dark Brown', value: '#242121' },
+  { name: 'Near Black', value: '#171717' },
+  { name: 'Dark Navy', value: '#060A16' },
+  { name: 'Midnight', value: '#1B1B41' },
+  { name: 'Dark Teal', value: '#0D2929' },
 ];
 
-const BUTTON_COLORS = [
-  { name: 'Blue', value: '#3B82F6', dark: false },
-  { name: 'Indigo', value: '#6366F1', dark: false },
-  { name: 'Purple', value: '#A855F7', dark: false },
-  { name: 'Pink', value: '#EC4899', dark: false },
-  { name: 'Red', value: '#EF4444', dark: false },
-  { name: 'Orange', value: '#F97316', dark: false },
-  { name: 'Green', value: '#10B981', dark: false },
-  { name: 'Teal', value: '#14B8A6', dark: false },
-  { name: 'Slate', value: '#64748B', dark: false },
-  { name: 'Dark Blue', value: '#1E40AF', dark: true },
-  { name: 'Dark Purple', value: '#7C3AED', dark: true },
-  { name: 'Dark Green', value: '#059669', dark: true },
+const ACCENT_COLORS = [
+  // Row 1: Warm & vibrant
+  { name: 'Orange', value: '#F76724' },
+  { name: 'Red', value: '#D53441' },
+  { name: 'Pink', value: '#E1508D' },
+  { name: 'Magenta', value: '#B138C9' },
+  { name: 'Purple', value: '#833BE2' },
+  { name: 'Violet', value: '#6C3EE5' },
+  { name: 'Indigo', value: '#4343DD' },
+  // Row 2: Cool & natural
+  { name: 'Blue', value: '#245BE3' },
+  { name: 'Azure', value: '#1E78BD' },
+  { name: 'Cerulean', value: '#2384A7' },
+  { name: 'Teal', value: '#26867D' },
+  { name: 'Sea Green', value: '#268760' },
+  { name: 'Green', value: '#2E9446' },
+  { name: 'Olive', value: '#609521' },
+  // Row 3: Earth & dark
+  { name: 'Brown', value: '#935A17' },
+  { name: 'Rust', value: '#CE711C' },
+  { name: 'Burnt Orange', value: '#E0591C' },
+  { name: 'Dark Maroon', value: '#401118' },
+  { name: 'Dark Navy', value: '#060A16' },
+  { name: 'Dark Gray', value: '#4A4A4A' },
+  { name: 'Black', value: '#000000' },
 ];
 
-const TEXT_COLORS = [
-  { name: 'Black', value: '#000000', dark: false },
-  { name: 'Dark Gray', value: '#1F2937', dark: false },
-  { name: 'Slate', value: '#334155', dark: false },
-  { name: 'Blue Gray', value: '#475569', dark: false },
-  { name: 'Navy', value: '#1E3A8A', dark: false },
-  { name: 'Purple', value: '#6B21A8', dark: false },
-  { name: 'Indigo', value: '#3730A3', dark: false },
-  { name: 'Teal', value: '#115E59', dark: false },
-];
+const BUTTON_COLORS = ACCENT_COLORS;
 
 export function CustomizationPanel({ onClose, onSettingsChange, currentSettings }: CustomizationPanelProps) {
   const [settings, setSettings] = useState<CustomizationSettings>(currentSettings);
   const [customBgColor, setCustomBgColor] = useState('');
   const [customButtonColor, setCustomButtonColor] = useState('');
-  const [customTextColor, setCustomTextColor] = useState('');
+  const [customAccentColor, setCustomAccentColor] = useState('');
 
   const updateSettings = (updates: Partial<CustomizationSettings>) => {
     const newSettings = { ...settings, ...updates };
@@ -86,7 +119,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
     onSettingsChange(newSettings);
   };
 
-  const applyCustomColor = (type: 'background' | 'button' | 'text', color: string) => {
+  const applyCustomColor = (type: 'background' | 'button' | 'accent', color: string) => {
     if (type === 'background') {
       updateSettings({ backgroundColor: color });
       setCustomBgColor('');
@@ -94,13 +127,13 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
       updateSettings({ buttonColor: color });
       setCustomButtonColor('');
     } else {
-      updateSettings({ headerTextColor: color });
-      setCustomTextColor('');
+      updateSettings({ accentColor: color });
+      setCustomAccentColor('');
     }
   };
 
   return (
-    <div className="w-80 border-l bg-white h-full overflow-y-auto">
+    <div className="w-80 border-l bg-white h-full overflow-y-scroll">
       <div className="sticky top-0 bg-white border-b p-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-2">
           <Paintbrush className="h-5 w-5" />
@@ -171,8 +204,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
         {/* Button Style Section */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Circle className="h-4 w-4" />
+            <CardTitle className="text-base">
               Button Style
             </CardTitle>
             <CardDescription>Choose the button corner style</CardDescription>
@@ -186,23 +218,17 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="rounded" id="rounded" />
                   <Label htmlFor="rounded" className="cursor-pointer flex-1">
-                    <div className="flex items-center justify-between">
-                      <span>Rounded</span>
-                      <Button variant="default" size="sm" className="rounded-md pointer-events-none">
-                        Example
-                      </Button>
-                    </div>
+                    <Button variant="default" size="sm" className="rounded-md pointer-events-none">
+                      Square
+                    </Button>
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="pill" id="pill" />
                   <Label htmlFor="pill" className="cursor-pointer flex-1">
-                    <div className="flex items-center justify-between">
-                      <span>Pill</span>
-                      <Button variant="default" size="sm" className="rounded-full pointer-events-none">
-                        Example
-                      </Button>
-                    </div>
+                    <Button variant="default" size="sm" className="rounded-full pointer-events-none">
+                      Rounded
+                    </Button>
                   </Label>
                 </div>
               </div>
@@ -214,14 +240,14 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Colors</CardTitle>
-            <CardDescription>Customize the color scheme</CardDescription>
+            <CardDescription>Customize the colour scheme</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="background">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="background">BG</TabsTrigger>
-                <TabsTrigger value="buttons">Buttons</TabsTrigger>
-                <TabsTrigger value="text">Text</TabsTrigger>
+                <TabsTrigger value="background">Background</TabsTrigger>
+                <TabsTrigger value="accent">Accent</TabsTrigger>
+                <TabsTrigger value="button">Button</TabsTrigger>
               </TabsList>
 
               <TabsContent value="background" className="space-y-3">
@@ -262,8 +288,48 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                 </div>
               </TabsContent>
 
-              <TabsContent value="buttons" className="space-y-3">
+              <TabsContent value="accent" className="space-y-3">
+                <Label>Accent Color</Label>
+                <p className="text-xs text-muted-foreground">Controls panel heading bars and content accents</p>
+                <div className="grid grid-cols-4 gap-2">
+                  {ACCENT_COLORS.map((color) => (
+                    <button
+                      key={color.value}
+                      onClick={() => updateSettings({ accentColor: color.value })}
+                      className={`h-10 rounded-md border-2 transition-all ${
+                        settings.accentColor === color.value
+                          ? 'border-black scale-95'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                    />
+                  ))}
+                </div>
+                <div className="pt-2 space-y-2">
+                  <Label className="text-xs">Custom HEX</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder="#4A4A4A"
+                      value={customAccentColor}
+                      onChange={(e) => setCustomAccentColor(e.target.value)}
+                      maxLength={7}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => applyCustomColor('accent', customAccentColor)}
+                      disabled={!customAccentColor.match(/^#[0-9A-Fa-f]{6}$/)}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="button" className="space-y-3">
                 <Label>Button Color</Label>
+                <p className="text-xs text-gray-600">Button text colour is auto-calculated for legibility</p>
                 <div className="grid grid-cols-4 gap-2">
                   {BUTTON_COLORS.map((color) => (
                     <button
@@ -284,7 +350,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                   <div className="flex gap-2">
                     <Input
                       type="text"
-                      placeholder="#3B82F6"
+                      placeholder="#000000"
                       value={customButtonColor}
                       onChange={(e) => setCustomButtonColor(e.target.value)}
                       maxLength={7}
@@ -293,44 +359,6 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                       size="sm"
                       onClick={() => applyCustomColor('button', customButtonColor)}
                       disabled={!customButtonColor.match(/^#[0-9A-Fa-f]{6}$/)}
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="text" className="space-y-3">
-                <Label>Header Text Color</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {TEXT_COLORS.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => updateSettings({ headerTextColor: color.value })}
-                      className={`h-10 rounded-md border-2 transition-all ${
-                        settings.headerTextColor === color.value
-                          ? 'border-black scale-95'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                      style={{ backgroundColor: color.value }}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-                <div className="pt-2 space-y-2">
-                  <Label className="text-xs">Custom HEX</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      placeholder="#000000"
-                      value={customTextColor}
-                      onChange={(e) => setCustomTextColor(e.target.value)}
-                      maxLength={7}
-                    />
-                    <Button
-                      size="sm"
-                      onClick={() => applyCustomColor('text', customTextColor)}
-                      disabled={!customTextColor.match(/^#[0-9A-Fa-f]{6}$/)}
                     >
                       Apply
                     </Button>
@@ -350,9 +378,9 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
               headerFont: 'sans',
               bodyFont: 'sans',
               buttonStyle: 'rounded',
-              backgroundColor: '#F9FAFB',
-              buttonColor: '#3B82F6',
-              headerTextColor: '#000000',
+              backgroundColor: '#FFFFFF',
+              buttonColor: '#000000',
+              accentColor: '#4A4A4A',
             };
             setSettings(defaultSettings);
             onSettingsChange(defaultSettings);

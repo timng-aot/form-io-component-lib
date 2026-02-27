@@ -10,9 +10,9 @@ export const useCustomization = () => {
       headerFont: 'sans',
       bodyFont: 'sans',
       buttonStyle: 'rounded' as const,
-      backgroundColor: '#F9FAFB',
-      buttonColor: '#3B82F6',
-      headerTextColor: '#000000',
+      backgroundColor: '#FFFFFF',
+      buttonColor: '#000000',
+      accentColor: '#4A4A4A',
     };
   }
   return context;
