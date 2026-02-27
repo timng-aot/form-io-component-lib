@@ -8,9 +8,18 @@ interface PanelFieldProps {
   children: React.ReactNode;
 }
 
+const HEADER_FONTS: Record<string, { family: string; weight?: number }> = {
+  'sans': { family: 'Figtree, sans-serif' },
+  'heavy-sans': { family: 'Figtree, sans-serif', weight: 600 },
+  'serif': { family: "'Libre Baskerville', serif" },
+  'mono': { family: "'DM Mono', monospace" },
+  'slab': { family: "'Roboto Slab', serif" },
+};
+
 export function PanelField({ title, description, children }: PanelFieldProps) {
-  const { accentColor } = useCustomization();
+  const { accentColor, headerFont } = useCustomization();
   const headingTextColor = getContrastColor(accentColor);
+  const headerFontStyle = HEADER_FONTS[headerFont];
 
   return (
     <div className="rounded-lg border overflow-hidden">
@@ -19,7 +28,11 @@ export function PanelField({ title, description, children }: PanelFieldProps) {
         className="px-6 py-4"
         style={{ backgroundColor: accentColor }}
       >
-        <h3 className="text-lg font-medium" style={{ color: headingTextColor }}>
+        <h3 className="text-lg font-medium" style={{
+          color: headingTextColor,
+          fontFamily: headerFontStyle?.family,
+          fontWeight: headerFontStyle?.weight,
+        }}>
           {title}
         </h3>
         {description && (

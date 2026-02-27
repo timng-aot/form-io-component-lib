@@ -38,17 +38,18 @@ export function getContrastColor(hex: string): string {
 
 const HEADER_FONTS = [
   { value: 'sans', label: 'Sans', family: 'Figtree, sans-serif' },
-  { value: 'serif', label: 'Serif', family: 'Georgia, serif' },
-  { value: 'heavy-sans', label: 'Heavy Sans', family: 'Inter, sans-serif' },
-  { value: 'mono', label: 'Mono', family: 'ui-monospace, monospace' },
-  { value: 'slab', label: 'Slab', family: 'Rockwell, serif' },
+  { value: 'heavy-sans', label: 'Heavy Sans', family: 'Figtree, sans-serif', weight: 600 },
+  { value: 'serif', label: 'Serif', family: "'Libre Baskerville', serif" },
+  { value: 'mono', label: 'Mono', family: "'DM Mono', monospace" },
+  { value: 'slab', label: 'Slab', family: "'Roboto Slab', serif" },
 ];
 
 const BODY_FONTS = [
   { value: 'sans', label: 'Sans', family: 'Figtree, sans-serif' },
-  { value: 'serif', label: 'Serif', family: 'Georgia, serif' },
-  { value: 'system', label: 'System', family: 'system-ui, sans-serif' },
-  { value: 'mono', label: 'Mono', family: 'ui-monospace, monospace' },
+  { value: 'heavy-sans', label: 'Heavy Sans', family: 'Figtree, sans-serif', weight: 600 },
+  { value: 'serif', label: 'Serif', family: "'Libre Baskerville', serif" },
+  { value: 'mono', label: 'Mono', family: "'DM Mono', monospace" },
+  { value: 'slab', label: 'Slab', family: "'Roboto Slab', serif" },
 ];
 
 const BACKGROUND_COLORS = [
@@ -169,7 +170,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                     <Label
                       htmlFor={`header-${font.value}`}
                       className="cursor-pointer"
-                      style={{ fontFamily: font.family }}
+                      style={{ fontFamily: font.family, fontWeight: font.weight }}
                     >
                       {font.label}
                     </Label>
@@ -190,7 +191,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                     <Label
                       htmlFor={`body-${font.value}`}
                       className="cursor-pointer"
-                      style={{ fontFamily: font.family }}
+                      style={{ fontFamily: font.family, fontWeight: font.weight }}
                     >
                       {font.label}
                     </Label>

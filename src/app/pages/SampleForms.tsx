@@ -13,11 +13,20 @@ import { CustomizationProvider } from '../components/CustomizationContext';
 import { Settings, ArrowLeft } from 'lucide-react';
 import { getContrastColor } from '../components/CustomizationPanel';
 
-const BODY_FONTS: Record<string, string> = {
-  'sans': 'Figtree, sans-serif',
-  'serif': 'Georgia, serif',
-  'system': 'system-ui, sans-serif',
-  'mono': 'ui-monospace, monospace',
+const HEADER_FONTS: Record<string, { family: string; weight?: number }> = {
+  'sans': { family: 'Figtree, sans-serif' },
+  'heavy-sans': { family: 'Figtree, sans-serif', weight: 600 },
+  'serif': { family: "'Libre Baskerville', serif" },
+  'mono': { family: "'DM Mono', monospace" },
+  'slab': { family: "'Roboto Slab', serif" },
+};
+
+const BODY_FONTS: Record<string, { family: string; weight?: number }> = {
+  'sans': { family: 'Figtree, sans-serif' },
+  'heavy-sans': { family: 'Figtree, sans-serif', weight: 600 },
+  'serif': { family: "'Libre Baskerville', serif" },
+  'mono': { family: "'DM Mono', monospace" },
+  'slab': { family: "'Roboto Slab', serif" },
 };
 
 export default function SampleForms() {
@@ -41,7 +50,8 @@ export default function SampleForms() {
           className="flex-1 overflow-y-scroll p-6"
           style={{
             backgroundColor: settings.backgroundColor,
-            fontFamily: BODY_FONTS[settings.bodyFont],
+            fontFamily: BODY_FONTS[settings.bodyFont]?.family,
+            fontWeight: BODY_FONTS[settings.bodyFont]?.weight,
           }}
         >
           <div className="max-w-3xl mx-auto space-y-6">
@@ -70,7 +80,11 @@ export default function SampleForms() {
 
             {/* Form Header */}
             <div className="text-center space-y-1">
-              <h1 className="text-2xl font-medium" style={{ color: settings.accentColor }}>
+              <h1 className="text-2xl font-medium" style={{
+                color: settings.accentColor,
+                fontFamily: HEADER_FONTS[settings.headerFont]?.family,
+                fontWeight: HEADER_FONTS[settings.headerFont]?.weight,
+              }}>
                 Patient Intake Form
               </h1>
               <p className="text-gray-600">Healthcare Form</p>

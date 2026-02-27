@@ -46,19 +46,20 @@ import { Input } from './components/ui/input';
 import { CustomizationPanel, CustomizationSettings, getContrastColor } from './components/CustomizationPanel';
 import { CustomizationProvider } from './components/CustomizationContext';
 
-const HEADER_FONTS: Record<string, string> = {
-  'sans': 'Figtree, sans-serif',
-  'serif': 'Georgia, serif',
-  'heavy-sans': 'Inter, sans-serif',
-  'mono': 'ui-monospace, monospace',
-  'slab': 'Rockwell, serif',
+const HEADER_FONTS: Record<string, { family: string; weight?: number }> = {
+  'sans': { family: 'Figtree, sans-serif' },
+  'heavy-sans': { family: 'Figtree, sans-serif', weight: 600 },
+  'serif': { family: "'Libre Baskerville', serif" },
+  'mono': { family: "'DM Mono', monospace" },
+  'slab': { family: "'Roboto Slab', serif" },
 };
 
-const BODY_FONTS: Record<string, string> = {
-  'sans': 'Figtree, sans-serif',
-  'serif': 'Georgia, serif',
-  'system': 'system-ui, sans-serif',
-  'mono': 'ui-monospace, monospace',
+const BODY_FONTS: Record<string, { family: string; weight?: number }> = {
+  'sans': { family: 'Figtree, sans-serif' },
+  'heavy-sans': { family: 'Figtree, sans-serif', weight: 600 },
+  'serif': { family: "'Libre Baskerville', serif" },
+  'mono': { family: "'DM Mono', monospace" },
+  'slab': { family: "'Roboto Slab', serif" },
 };
 
 export default function App() {
@@ -97,7 +98,8 @@ export default function App() {
           className="flex-1 overflow-y-scroll p-6"
           style={{
             backgroundColor: settings.backgroundColor,
-            fontFamily: BODY_FONTS[settings.bodyFont],
+            fontFamily: BODY_FONTS[settings.bodyFont]?.family,
+            fontWeight: BODY_FONTS[settings.bodyFont]?.weight,
           }}
         >
           <div className="max-w-7xl mx-auto space-y-6">
@@ -106,7 +108,8 @@ export default function App() {
               <h1
                 className="text-4xl"
                 style={{
-                  fontFamily: HEADER_FONTS[settings.headerFont],
+                  fontFamily: HEADER_FONTS[settings.headerFont]?.family,
+                  fontWeight: HEADER_FONTS[settings.headerFont]?.weight,
                   color: settings.accentColor,
                 }}
               >
