@@ -1,6 +1,7 @@
 import React from 'react';
 import { Label } from '../ui/label';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { useCustomization } from '../CustomizationContext';
 
 interface RadioFieldProps {
   label: string;
@@ -19,6 +20,9 @@ export function RadioField({
   value,
   onChange
 }: RadioFieldProps) {
+  const { buttonColor } = useCustomization();
+  const radioStyle = { '--radio-color': buttonColor } as React.CSSProperties;
+
   return (
     <div className="space-y-2">
       <Label>
@@ -28,7 +32,7 @@ export function RadioField({
       <RadioGroup value={value} onValueChange={onChange}>
         {options.map((option) => (
           <div key={option.value} className="flex items-center space-x-2">
-            <RadioGroupItem value={option.value} id={option.value} />
+            <RadioGroupItem value={option.value} id={option.value} style={radioStyle} />
             <Label htmlFor={option.value} className="cursor-pointer">
               {option.label}
             </Label>

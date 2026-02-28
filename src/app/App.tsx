@@ -43,8 +43,9 @@ import { FileField } from './components/formio/FileField';
 import { Input } from './components/ui/input';
 
 // Customization
-import { CustomizationPanel, CustomizationSettings, getContrastColor } from './components/CustomizationPanel';
+import { CustomizationPanel, CustomizationSettings } from './components/CustomizationPanel';
 import { CustomizationProvider } from './components/CustomizationContext';
+import { FormsflowBranding } from './components/FormsflowBranding';
 
 const HEADER_FONTS: Record<string, { family: string; weight?: number }> = {
   'sans': { family: 'Figtree, sans-serif' },
@@ -88,8 +89,6 @@ export default function App() {
     setSettings(newSettings);
   };
 
-  const customizeBtnTextColor = getContrastColor(settings.buttonColor);
-
   return (
     <CustomizationProvider value={settings}>
       <div className="flex h-screen overflow-hidden">
@@ -100,7 +99,8 @@ export default function App() {
             backgroundColor: settings.backgroundColor,
             fontFamily: BODY_FONTS[settings.bodyFont]?.family,
             fontWeight: BODY_FONTS[settings.bodyFont]?.weight,
-          }}
+            '--body-font-weight': BODY_FONTS[settings.bodyFont]?.weight ?? 500,
+          } as React.CSSProperties & Record<string, unknown>}
         >
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Header */}
@@ -110,7 +110,6 @@ export default function App() {
                 style={{
                   fontFamily: HEADER_FONTS[settings.headerFont]?.family,
                   fontWeight: HEADER_FONTS[settings.headerFont]?.weight,
-                  color: settings.accentColor,
                 }}
               >
                 formsflow Form.io Component Library
@@ -123,27 +122,14 @@ export default function App() {
             {/* Customize Button */}
             <div className="flex justify-center gap-2">
               <Link to="/samples">
-                <Button
-                  variant="outline"
-                  style={{
-                    borderColor: settings.buttonColor,
-                    color: settings.buttonColor,
-                    borderRadius: settings.buttonStyle === 'pill' ? '9999px' : '0.3125rem',
-                  }}
-                >
+                <Button variant="outline">
                   <FileText className="h-4 w-4 mr-2" />
                   Sample Forms
                 </Button>
               </Link>
               <Button
-                variant="outline"
+                variant={showCustomization ? 'default' : 'outline'}
                 onClick={() => setShowCustomization(!showCustomization)}
-                style={{
-                  backgroundColor: showCustomization ? settings.buttonColor : undefined,
-                  color: showCustomization ? customizeBtnTextColor : settings.buttonColor,
-                  borderColor: settings.buttonColor,
-                  borderRadius: settings.buttonStyle === 'pill' ? '9999px' : '0.3125rem',
-                }}
               >
                 <Settings className="h-4 w-4 mr-2" />
                 {showCustomization ? 'Hide' : 'Show'} Customization
@@ -581,11 +567,7 @@ export default function App() {
             </Tabs>
 
             {/* Footer - formsflow branding */}
-            <div className="text-center py-4">
-              <p className="text-sm text-gray-400">
-                Created by <span className="font-medium text-gray-500">formsflow.ai</span>
-              </p>
-            </div>
+            <FormsflowBranding />
           </div>
         </div>
 

@@ -37,7 +37,7 @@ export function PhoneField({
         className={hasError ? 'border-destructive' : ''}
       />
       {hasError && (
-        <p className="text-sm text-destructive">Phone Number does not match the mask.</p>
+        <p className="text-xs text-destructive">Phone Number does not match the mask.</p>
       )}
       {!hasError && description && (
         <p className="text-sm text-gray-500">{description}</p>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { useCustomization } from '../CustomizationContext';
-import { getContrastColor } from '../CustomizationPanel';
+import { getContrastColor, darkenColor } from '../CustomizationPanel';
 
 interface ButtonFieldProps {
   label: string;
@@ -23,24 +23,16 @@ export function ButtonField({
 
   const borderRadius = customization.buttonStyle === 'pill' ? '9999px' : '0.3125rem';
   const textColor = getContrastColor(customization.buttonColor);
+  const hoverColor = darkenColor(customization.buttonColor, 0.8);
 
-  const customStyle = variant === 'default' ? (
-    hovered ? {
-      backgroundColor: 'transparent',
-      color: customization.buttonColor,
-      borderColor: customization.buttonColor,
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderRadius,
-    } : {
-      backgroundColor: customization.buttonColor,
-      color: textColor,
-      borderColor: customization.buttonColor,
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderRadius,
-    }
-  ) : {};
+  const customStyle = variant === 'default' ? {
+    backgroundColor: hovered ? hoverColor : customization.buttonColor,
+    color: textColor,
+    borderColor: hovered ? hoverColor : customization.buttonColor,
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderRadius,
+  } : {};
 
   return (
     <Button

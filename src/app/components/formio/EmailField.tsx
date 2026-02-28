@@ -37,7 +37,7 @@ export function EmailField({
         className={hasError ? 'border-destructive' : ''}
       />
       {hasError && (
-        <p className="text-sm text-destructive">Email must be a valid email.</p>
+        <p className="text-xs text-destructive">Email must be a valid email.</p>
       )}
       {!hasError && description && (
         <p className="text-sm text-gray-500">{description}</p>

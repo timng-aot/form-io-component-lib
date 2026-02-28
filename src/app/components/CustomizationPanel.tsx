@@ -23,6 +23,17 @@ export interface CustomizationSettings {
 }
 
 /**
+ * Darkens a hex colour by multiplying each RGB channel by the given factor.
+ * Factor 0.9 = 10% darker (used for button hover per spec).
+ */
+export function darkenColor(hex: string, factor: number): string {
+  const r = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
+  const g = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
+  const b = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
+/**
  * Returns white or black text color based on WCAG relative luminance of the background.
  */
 export function getContrastColor(hex: string): string {
@@ -120,7 +131,8 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
     onSettingsChange(newSettings);
   };
 
-  const applyCustomColor = (type: 'background' | 'button' | 'accent', color: string) => {
+  const applyCustomColor = (type: 'background' | 'button' | 'accent', rawColor: string) => {
+    const color = rawColor.startsWith('#') ? rawColor : `#${rawColor}`;
     if (type === 'background') {
       updateSettings({ backgroundColor: color });
       setCustomBgColor('');
@@ -138,7 +150,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
       <div className="sticky top-0 bg-white border-b p-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-2">
           <Paintbrush className="h-5 w-5" />
-          <h2 className="font-semibold">Customize</h2>
+          <h2 className="text-xl font-semibold">Customize</h2>
         </div>
         {onClose && (
           <Button variant="ghost" size="icon" onClick={onClose}>
@@ -281,7 +293,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                     <Button
                       size="sm"
                       onClick={() => applyCustomColor('background', customBgColor)}
-                      disabled={!customBgColor.match(/^#[0-9A-Fa-f]{6}$/)}
+                      disabled={!customBgColor.match(/^#?[0-9A-Fa-f]{6}$/)}
                     >
                       Apply
                     </Button>
@@ -291,7 +303,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
 
               <TabsContent value="accent" className="space-y-3">
                 <Label>Accent Color</Label>
-                <p className="text-xs text-muted-foreground">Controls panel heading bars and content accents</p>
+                <p className="text-xs text-gray-600">Controls panel heading bars and content accents. Heading text colour is auto-calculated for legibility.</p>
                 <div className="grid grid-cols-4 gap-2">
                   {ACCENT_COLORS.map((color) => (
                     <button
@@ -320,7 +332,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                     <Button
                       size="sm"
                       onClick={() => applyCustomColor('accent', customAccentColor)}
-                      disabled={!customAccentColor.match(/^#[0-9A-Fa-f]{6}$/)}
+                      disabled={!customAccentColor.match(/^#?[0-9A-Fa-f]{6}$/)}
                     >
                       Apply
                     </Button>
@@ -330,7 +342,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
 
               <TabsContent value="button" className="space-y-3">
                 <Label>Button Color</Label>
-                <p className="text-xs text-gray-600">Button text colour is auto-calculated for legibility</p>
+                <p className="text-xs text-gray-600">Controls buttons, checkboxes and radio indicators. Text colour is auto-calculated for legibility.</p>
                 <div className="grid grid-cols-4 gap-2">
                   {BUTTON_COLORS.map((color) => (
                     <button
@@ -359,7 +371,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
                     <Button
                       size="sm"
                       onClick={() => applyCustomColor('button', customButtonColor)}
-                      disabled={!customButtonColor.match(/^#[0-9A-Fa-f]{6}$/)}
+                      disabled={!customButtonColor.match(/^#?[0-9A-Fa-f]{6}$/)}
                     >
                       Apply
                     </Button>

@@ -11,7 +11,7 @@ import { ButtonField } from '../components/formio/ButtonField';
 import { CustomizationPanel, CustomizationSettings } from '../components/CustomizationPanel';
 import { CustomizationProvider } from '../components/CustomizationContext';
 import { Settings, ArrowLeft } from 'lucide-react';
-import { getContrastColor } from '../components/CustomizationPanel';
+import { FormsflowBranding } from '../components/FormsflowBranding';
 
 const HEADER_FONTS: Record<string, { family: string; weight?: number }> = {
   'sans': { family: 'Figtree, sans-serif' },
@@ -41,8 +41,6 @@ export default function SampleForms() {
   });
   const [date, setDate] = useState<Date>();
 
-  const customizeBtnTextColor = getContrastColor(settings.buttonColor);
-
   return (
     <CustomizationProvider value={settings}>
       <div className="flex h-screen overflow-hidden">
@@ -52,7 +50,8 @@ export default function SampleForms() {
             backgroundColor: settings.backgroundColor,
             fontFamily: BODY_FONTS[settings.bodyFont]?.family,
             fontWeight: BODY_FONTS[settings.bodyFont]?.weight,
-          }}
+            '--body-font-weight': BODY_FONTS[settings.bodyFont]?.weight ?? 500,
+          } as React.CSSProperties & Record<string, unknown>}
         >
           <div className="max-w-3xl mx-auto space-y-6">
             {/* Navigation */}
@@ -64,123 +63,115 @@ export default function SampleForms() {
                 </Button>
               </Link>
               <Button
-                variant="outline"
+                variant={showCustomization ? 'default' : 'outline'}
                 onClick={() => setShowCustomization(!showCustomization)}
-                style={{
-                  backgroundColor: showCustomization ? settings.buttonColor : 'white',
-                  color: showCustomization ? customizeBtnTextColor : settings.buttonColor,
-                  borderColor: settings.buttonColor,
-                  borderRadius: settings.buttonStyle === 'pill' ? '9999px' : '0.3125rem',
-                }}
               >
                 <Settings className="h-4 w-4 mr-2" />
                 Customize
               </Button>
             </div>
 
-            {/* Form Header */}
-            <div className="text-center space-y-1">
-              <h1 className="text-2xl font-medium" style={{
-                color: settings.accentColor,
-                fontFamily: HEADER_FONTS[settings.headerFont]?.family,
-                fontWeight: HEADER_FONTS[settings.headerFont]?.weight,
-              }}>
-                Patient Intake Form
-              </h1>
-              <p className="text-gray-600">Healthcare Form</p>
-            </div>
-
-            {/* Section 1 */}
-            <PanelField title="Section 1: Applicant Information">
-              <div className="space-y-4">
-                <ColumnsField columns={3}>
-                  <>
-                    <TextField label="First Name" required />
-                    <TextField label="Middle Name" />
-                    <TextField label="Last Name" required />
-                  </>
-                </ColumnsField>
-
-                <ColumnsField columns={2}>
-                  <>
-                    <TextField label="Social Insurance Number (SIN)" placeholder="___-___-___" required />
-                    <DateTimeField label="Date of Birth" required value={date} onChange={setDate} />
-                  </>
-                </ColumnsField>
-
-                <TextField label="Mailing Address (Street, Apt)" placeholder="e.g., 123 Maple Street, Apt 4B" required />
-
-                <ColumnsField columns={3}>
-                  <>
-                    <TextField label="City" required />
-                    <TextField label="Province" required />
-                    <TextField label="Postal Code" placeholder="__ ___" required />
-                  </>
-                </ColumnsField>
-
-                <ColumnsField columns={2}>
-                  <>
-                    <PhoneField label="Primary Phone Number" placeholder="(___) ___-____" required />
-                    <SelectField
-                      label="Marital Status"
-                      required
-                      options={[
-                        { value: 'single', label: 'Single' },
-                        { value: 'married', label: 'Married' },
-                        { value: 'common-law', label: 'Common-law' },
-                        { value: 'separated', label: 'Separated' },
-                        { value: 'divorced', label: 'Divorced' },
-                        { value: 'widowed', label: 'Widowed' },
-                      ]}
-                    />
-                  </>
-                </ColumnsField>
+            {/* Form container — white card over the background colour */}
+            <div className="bg-white rounded-[5px] p-10 space-y-6">
+              {/* Form Header */}
+              <div className="text-center space-y-1">
+                <h1 className="text-2xl font-medium" style={{
+                  fontFamily: HEADER_FONTS[settings.headerFont]?.family,
+                  fontWeight: HEADER_FONTS[settings.headerFont]?.weight,
+                }}>
+                  Patient Intake Form
+                </h1>
+                <p className="text-gray-600">Healthcare Form</p>
               </div>
-            </PanelField>
 
-            {/* Section 2 */}
-            <PanelField title="Section 2: Spouse or Common-law Partner's Information">
-              <div className="space-y-4">
-                <ColumnsField columns={3}>
-                  <>
-                    <TextField label="First Name" required />
-                    <TextField label="Middle Name" />
-                    <TextField label="Last Name" required />
-                  </>
-                </ColumnsField>
+              {/* Section 1 */}
+              <PanelField title="Section 1: Applicant Information">
+                <div className="space-y-4">
+                  <ColumnsField columns={3}>
+                    <>
+                      <TextField label="First Name" required />
+                      <TextField label="Middle Name" />
+                      <TextField label="Last Name" required />
+                    </>
+                  </ColumnsField>
 
-                <ColumnsField columns={2}>
-                  <>
-                    <TextField label="Social Insurance Number (SIN)" placeholder="___-___-___" required />
-                    <DateTimeField label="Date of Birth" required value={date} onChange={setDate} />
-                  </>
-                </ColumnsField>
+                  <ColumnsField columns={2}>
+                    <>
+                      <TextField label="Social Insurance Number (SIN)" placeholder="___-___-___" required />
+                      <DateTimeField label="Date of Birth" required value={date} onChange={setDate} />
+                    </>
+                  </ColumnsField>
 
-                <TextField label="Mailing Address (Street, Apt)" placeholder="e.g., 123 Maple Street, Apt 4B" required />
+                  <TextField label="Mailing Address (Street, Apt)" placeholder="e.g., 123 Maple Street, Apt 4B" required />
 
-                <ColumnsField columns={3}>
-                  <>
-                    <TextField label="City" required />
-                    <TextField label="Province" required />
-                    <TextField label="Postal Code" placeholder="__ ___" required />
-                  </>
-                </ColumnsField>
+                  <ColumnsField columns={3}>
+                    <>
+                      <TextField label="City" required />
+                      <TextField label="Province" required />
+                      <TextField label="Postal Code" placeholder="__ ___" required />
+                    </>
+                  </ColumnsField>
 
-                <PhoneField label="Primary Phone Number" placeholder="(___) ___-____" required />
+                  <ColumnsField columns={2}>
+                    <>
+                      <PhoneField label="Primary Phone Number" placeholder="(___) ___-____" required />
+                      <SelectField
+                        label="Marital Status"
+                        required
+                        options={[
+                          { value: 'single', label: 'Single' },
+                          { value: 'married', label: 'Married' },
+                          { value: 'common-law', label: 'Common-law' },
+                          { value: 'separated', label: 'Separated' },
+                          { value: 'divorced', label: 'Divorced' },
+                          { value: 'widowed', label: 'Widowed' },
+                        ]}
+                      />
+                    </>
+                  </ColumnsField>
+                </div>
+              </PanelField>
+
+              {/* Section 2 */}
+              <PanelField title="Section 2: Spouse or Common-law Partner's Information">
+                <div className="space-y-4">
+                  <ColumnsField columns={3}>
+                    <>
+                      <TextField label="First Name" required />
+                      <TextField label="Middle Name" />
+                      <TextField label="Last Name" required />
+                    </>
+                  </ColumnsField>
+
+                  <ColumnsField columns={2}>
+                    <>
+                      <TextField label="Social Insurance Number (SIN)" placeholder="___-___-___" required />
+                      <DateTimeField label="Date of Birth" required value={date} onChange={setDate} />
+                    </>
+                  </ColumnsField>
+
+                  <TextField label="Mailing Address (Street, Apt)" placeholder="e.g., 123 Maple Street, Apt 4B" required />
+
+                  <ColumnsField columns={3}>
+                    <>
+                      <TextField label="City" required />
+                      <TextField label="Province" required />
+                      <TextField label="Postal Code" placeholder="__ ___" required />
+                    </>
+                  </ColumnsField>
+
+                  <PhoneField label="Primary Phone Number" placeholder="(___) ___-____" required />
+                </div>
+              </PanelField>
+
+              {/* Submit */}
+              <div className="flex justify-center pb-6">
+                <ButtonField label="Submit" />
               </div>
-            </PanelField>
-
-            {/* Submit */}
-            <div className="flex justify-center pb-6">
-              <ButtonField label="Submit" />
             </div>
 
             {/* Branding */}
-            <div className="text-center py-4">
-              <p className="text-sm text-gray-400">
-                Created by <span className="font-medium text-gray-500">formsflow.ai</span>
-              </p>
-            </div>
+            <FormsflowBranding />
           </div>
         </div>
 

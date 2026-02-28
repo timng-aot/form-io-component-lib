@@ -37,7 +37,7 @@ export function URLField({
         className={hasError ? 'border-destructive' : ''}
       />
       {hasError && (
-        <p className="text-sm text-destructive">Url must be a valid url.</p>
+        <p className="text-xs text-destructive">Url must be a valid url.</p>
       )}
       {!hasError && description && (
         <p className="text-sm text-gray-500">{description}</p>
