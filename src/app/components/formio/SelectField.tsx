@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import {
   Select,
@@ -27,13 +27,22 @@ export function SelectField({
   value,
   onChange
 }: SelectFieldProps) {
+  const [internalValue, setInternalValue] = useState<string | undefined>();
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+
+  const handleChange = (val: string) => {
+    if (!isControlled) setInternalValue(val);
+    onChange?.(val);
+  };
+
   return (
     <div className="space-y-2">
       <Label>
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
-      <Select value={value} onValueChange={onChange}>
+      <Select value={currentValue} onValueChange={handleChange}>
         <SelectTrigger>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

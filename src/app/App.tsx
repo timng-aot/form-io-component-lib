@@ -82,7 +82,7 @@ export default function App() {
     buttonStyle: 'rounded',
     backgroundColor: '#FFFFFF',
     buttonColor: '#000000',
-    accentColor: '#4A4A4A',
+    accentColor: '#D9D9D9',
   });
 
   const handleSettingsChange = (newSettings: CustomizationSettings) => {
@@ -104,41 +104,39 @@ export default function App() {
         >
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Header */}
-            <div className="text-center space-y-2">
-              <h1
-                className="text-4xl"
-                style={{
-                  fontFamily: HEADER_FONTS[settings.headerFont]?.family,
-                  fontWeight: HEADER_FONTS[settings.headerFont]?.weight,
-                }}
-              >
-                formsflow Form.io Component Library
-              </h1>
-              <p className="text-gray-600">
-                A comprehensive collection of all Form.io components built with React and Tailwind CSS
-              </p>
-            </div>
+            <div className="bg-white rounded-[5px] p-6 space-y-4" style={{ fontFamily: 'Figtree, sans-serif', fontWeight: 400 }}>
+              <div className="text-center space-y-2">
+                <h1
+                  className="text-4xl"
+                >
+                  formsflow Form.io Component Library
+                </h1>
+                <p className="text-gray-600">
+                  A comprehensive collection of all Form.io components built with React and Tailwind CSS
+                </p>
+              </div>
 
-            {/* Customize Button */}
-            <div className="flex justify-center gap-2">
-              <Link to="/samples">
-                <Button variant="outline">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Sample Forms
+              {/* Customize Button */}
+              <div className="flex justify-center gap-2">
+                <Link to="/samples">
+                  <Button variant="outline">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Sample Forms
+                  </Button>
+                </Link>
+                <Button
+                  variant={showCustomization ? 'default' : 'outline'}
+                  onClick={() => setShowCustomization(!showCustomization)}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  {showCustomization ? 'Hide' : 'Show'} Customization
                 </Button>
-              </Link>
-              <Button
-                variant={showCustomization ? 'default' : 'outline'}
-                onClick={() => setShowCustomization(!showCustomization)}
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                {showCustomization ? 'Hide' : 'Show'} Customization
-              </Button>
+              </div>
             </div>
 
             {/* Main Content */}
             <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-4" style={{ fontFamily: 'Figtree, sans-serif', fontWeight: 400 }}>
                 <TabsTrigger value="basic">Basic</TabsTrigger>
                 <TabsTrigger value="advanced">Advanced</TabsTrigger>
                 <TabsTrigger value="layout">Layout</TabsTrigger>

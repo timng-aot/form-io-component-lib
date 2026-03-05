@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
 import { useCustomization } from '../CustomizationContext';
@@ -14,9 +14,18 @@ interface CheckboxFieldProps {
 export function CheckboxField({
   label,
   description,
-  checked = false,
+  checked,
   onChange
 }: CheckboxFieldProps) {
+  const [internalChecked, setInternalChecked] = useState(false);
+  const isControlled = checked !== undefined;
+  const currentChecked = isControlled ? checked : internalChecked;
+
+  const handleChange = (val: boolean) => {
+    if (!isControlled) setInternalChecked(val);
+    onChange?.(val);
+  };
+
   const { buttonColor } = useCustomization();
   const checkboxStyle = {
     '--checkbox-color': buttonColor,
@@ -28,8 +37,8 @@ export function CheckboxField({
       <div className="flex items-center space-x-2">
         <Checkbox
           id={label}
-          checked={checked}
-          onCheckedChange={(checked) => onChange?.(checked as boolean)}
+          checked={currentChecked}
+          onCheckedChange={(checked) => handleChange(checked as boolean)}
           style={checkboxStyle}
         />
         <Label htmlFor={label} className="cursor-pointer">

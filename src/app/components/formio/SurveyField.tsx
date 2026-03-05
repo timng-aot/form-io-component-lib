@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 
 interface SurveyFieldProps {
@@ -17,11 +17,17 @@ export function SurveyField({
   options,
   required = false,
   description,
-  value = {},
+  value,
   onChange
 }: SurveyFieldProps) {
+  const [internalValue, setInternalValue] = useState<Record<string, string>>({});
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+
   const handleChange = (question: string, answer: string) => {
-    onChange?.({ ...value, [question]: answer });
+    const next = { ...currentValue, [question]: answer };
+    if (!isControlled) setInternalValue(next);
+    onChange?.(next);
   };
 
   return (
@@ -53,7 +59,7 @@ export function SurveyField({
                   <input
                     type="radio"
                     name={`survey-${label}-${idx}`}
-                    checked={value[question] === option}
+                    checked={currentValue[question] === option}
                     onChange={() => handleChange(question, option)}
                     className="size-4 accent-primary cursor-pointer"
                   />

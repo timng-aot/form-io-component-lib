@@ -12,7 +12,7 @@ export const useCustomization = () => {
       buttonStyle: 'rounded' as const,
       backgroundColor: '#FFFFFF',
       buttonColor: '#000000',
-      accentColor: '#4A4A4A',
+      accentColor: '#D9D9D9',
     };
   }
   return context;

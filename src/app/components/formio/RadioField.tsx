@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { useCustomization } from '../CustomizationContext';
@@ -20,6 +20,15 @@ export function RadioField({
   value,
   onChange
 }: RadioFieldProps) {
+  const [internalValue, setInternalValue] = useState<string | undefined>();
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+
+  const handleChange = (val: string) => {
+    if (!isControlled) setInternalValue(val);
+    onChange?.(val);
+  };
+
   const { buttonColor } = useCustomization();
   const radioStyle = { '--radio-color': buttonColor } as React.CSSProperties;
 
@@ -29,7 +38,7 @@ export function RadioField({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
-      <RadioGroup value={value} onValueChange={onChange}>
+      <RadioGroup value={currentValue} onValueChange={handleChange}>
         {options.map((option) => (
           <div key={option.value} className="flex items-center space-x-2">
             <RadioGroupItem value={option.value} id={option.value} style={radioStyle} />

@@ -22,13 +22,14 @@ export function PanelField({ title, description, children }: PanelFieldProps) {
   const headerFontStyle = HEADER_FONTS[headerFont];
 
   return (
-    <div className="rounded-lg border overflow-hidden">
+    <div className="rounded-lg border">
       {/* Accent heading bar */}
       <div
-        className="px-6 py-4"
+        className="px-4 py-2 rounded-t-lg"
         style={{ backgroundColor: accentColor }}
       >
-        <h3 className="text-lg font-medium" style={{
+        <h3 className="font-medium" style={{
+          fontSize: '14px',
           color: headingTextColor,
           fontFamily: headerFontStyle?.family,
           fontWeight: headerFontStyle?.weight,
@@ -42,7 +43,7 @@ export function PanelField({ title, description, children }: PanelFieldProps) {
         )}
       </div>
       {/* Panel body */}
-      <div className="px-6 py-4" style={{ backgroundColor: '#FFFFFF' }}>
+      <div className="px-6 py-4 space-y-4" style={{ backgroundColor: '#FFFFFF' }}>
         {children}
       </div>
     </div>

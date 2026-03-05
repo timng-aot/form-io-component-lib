@@ -64,57 +64,51 @@ const BODY_FONTS = [
 ];
 
 const BACKGROUND_COLORS = [
-  // Row 1: Neutrals & warm pastels
-  { name: 'White', value: '#FFFFFF' },
-  { name: 'Light Gray', value: '#F9F9F9' },
-  { name: 'Rose Tint', value: '#FEF0F0' },
-  { name: 'Pink Tint', value: '#FCF1F7' },
-  { name: 'Violet Tint', value: '#F9F4FF' },
-  { name: 'Magenta Tint', value: '#FCF3FF' },
-  { name: 'Lavender Tint', value: '#F0E6FE' },
-  // Row 2: Cool pastels
-  { name: 'Indigo Tint', value: '#ECF0FE' },
-  { name: 'Blue Tint', value: '#EDF4FF' },
-  { name: 'Sky Tint', value: '#EEF8FF' },
-  { name: 'Cyan Tint', value: '#EBFDFF' },
-  { name: 'Teal Tint', value: '#EFFCF9' },
-  { name: 'Mint Tint', value: '#EBFCF4' },
-  { name: 'Lime Tint', value: '#F6FDE5' },
+  // Row 1: Neutrals
+  { name: 'Near White', value: '#FCFCFC' },
+  { name: 'Light Gray', value: '#F7F7F7' },
+  { name: 'Cool Gray', value: '#F4F7FA' },
+  { name: 'Ice Blue', value: '#E8F1F8' },
+  { name: 'Pale Teal', value: '#E7F2F2' },
+  { name: 'Pale Green', value: '#EAF4EC' },
+  // Row 2: Tints
+  { name: 'Silver', value: '#EFEFEF' },
+  { name: 'Blush', value: '#FBEBEC' },
+  { name: 'Rose', value: '#F3E9EC' },
+  { name: 'Lavender', value: '#F0ECFC' },
+  { name: 'Wisteria', value: '#EFECF5' },
+  { name: 'Peach', value: '#FCEEE8' },
   // Row 3: Warm & dark
-  { name: 'Amber Tint', value: '#FEF6EB' },
-  { name: 'Salmon Tint', value: '#FDF1F0' },
-  { name: 'Dark Brown', value: '#242121' },
-  { name: 'Near Black', value: '#171717' },
-  { name: 'Dark Navy', value: '#060A16' },
-  { name: 'Midnight', value: '#1B1B41' },
-  { name: 'Dark Teal', value: '#0D2929' },
+  { name: 'Cream', value: '#F6F1E6' },
+  { name: 'Navy', value: '#011B47' },
+  { name: 'Forest', value: '#052B00' },
+  { name: 'Oxblood', value: '#240001' },
+  { name: 'Chocolate', value: '#392000' },
+  { name: 'Black', value: '#000000' },
 ];
 
 const ACCENT_COLORS = [
-  // Row 1: Warm & vibrant
-  { name: 'Orange', value: '#F76724' },
-  { name: 'Red', value: '#D53441' },
-  { name: 'Pink', value: '#E1508D' },
-  { name: 'Magenta', value: '#B138C9' },
-  { name: 'Purple', value: '#833BE2' },
-  { name: 'Violet', value: '#6C3EE5' },
-  { name: 'Indigo', value: '#4343DD' },
-  // Row 2: Cool & natural
-  { name: 'Blue', value: '#245BE3' },
-  { name: 'Azure', value: '#1E78BD' },
-  { name: 'Cerulean', value: '#2384A7' },
-  { name: 'Teal', value: '#26867D' },
-  { name: 'Sea Green', value: '#268760' },
-  { name: 'Green', value: '#2E9446' },
-  { name: 'Olive', value: '#609521' },
-  // Row 3: Earth & dark
-  { name: 'Brown', value: '#935A17' },
-  { name: 'Rust', value: '#CE711C' },
-  { name: 'Burnt Orange', value: '#E0591C' },
-  { name: 'Dark Maroon', value: '#401118' },
-  { name: 'Dark Navy', value: '#060A16' },
-  { name: 'Dark Gray', value: '#4A4A4A' },
+  // Row 1: Neutrals & warm
   { name: 'Black', value: '#000000' },
+  { name: 'Warm Gray', value: '#4A4540' },
+  { name: 'Slate', value: '#4A5568' },
+  { name: 'Dark Gold', value: '#A8750A' },
+  { name: 'Amber', value: '#CE711C' },
+  { name: 'Burnt Orange', value: '#E0591C' },
+  // Row 2: Red & purple
+  { name: 'Red', value: '#D53441' },
+  { name: 'Brick', value: '#B03A2E' },
+  { name: 'Burgundy', value: '#8B2040' },
+  { name: 'Violet', value: '#6C3EE5' },
+  { name: 'Purple', value: '#5B3FA0' },
+  { name: 'Deep Purple', value: '#4A3080' },
+  // Row 3: Blue, teal & green
+  { name: 'Blue', value: '#1E78BD' },
+  { name: 'Cobalt', value: '#0060AA' },
+  { name: 'Teal', value: '#0F7B82' },
+  { name: 'Dark Teal', value: '#0A6570' },
+  { name: 'Green', value: '#2E9446' },
+  { name: 'Forest', value: '#1E6B3C' },
 ];
 
 const BUTTON_COLORS = ACCENT_COLORS;
@@ -131,17 +125,19 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
     onSettingsChange(newSettings);
   };
 
+  const normalizeHexInput = (value: string): string => {
+    if (value === '' || value === '#') return '';
+    return value.startsWith('#') ? value : `#${value}`;
+  };
+
   const applyCustomColor = (type: 'background' | 'button' | 'accent', rawColor: string) => {
     const color = rawColor.startsWith('#') ? rawColor : `#${rawColor}`;
     if (type === 'background') {
       updateSettings({ backgroundColor: color });
-      setCustomBgColor('');
     } else if (type === 'button') {
       updateSettings({ buttonColor: color });
-      setCustomButtonColor('');
     } else {
       updateSettings({ accentColor: color });
-      setCustomAccentColor('');
     }
   };
 
@@ -258,125 +254,137 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
           <CardContent>
             <Tabs defaultValue="background">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="background">Background</TabsTrigger>
+                <TabsTrigger value="background">Fill</TabsTrigger>
                 <TabsTrigger value="accent">Accent</TabsTrigger>
                 <TabsTrigger value="button">Button</TabsTrigger>
               </TabsList>
 
               <TabsContent value="background" className="space-y-3">
                 <Label>Background Color</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {BACKGROUND_COLORS.map((color) => (
-                    <button
-                      key={color.value}
-                      onClick={() => updateSettings({ backgroundColor: color.value })}
-                      className={`h-10 rounded-md border-2 transition-all ${
-                        settings.backgroundColor === color.value
-                          ? 'border-black scale-95'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                      style={{ backgroundColor: color.value }}
-                      title={color.name}
-                    />
-                  ))}
+                <p className="text-xs text-gray-600">Sets the form container background fill.</p>
+                <div className="grid grid-cols-6 gap-1.5">
+                  {BACKGROUND_COLORS.map((color) => {
+                    const isLight = getContrastColor(color.value) === '#000000';
+                    return (
+                      <button
+                        key={color.value}
+                        onClick={() => updateSettings({ backgroundColor: color.value })}
+                        className={`aspect-square rounded-[5px] border transition-all ${
+                          settings.backgroundColor === color.value
+                            ? 'border-black ring-2 ring-black ring-offset-1 scale-95'
+                            : isLight
+                              ? 'border-[#e5e5e5] hover:border-gray-400'
+                              : 'border-transparent hover:border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      />
+                    );
+                  })}
                 </div>
-                <div className="pt-2 space-y-2">
+                <form className="pt-2 space-y-2" onSubmit={(e) => { e.preventDefault(); if (customBgColor.match(/^#?[0-9A-Fa-f]{6}$/)) applyCustomColor('background', customBgColor); }}>
                   <Label className="text-xs">Custom HEX</Label>
                   <div className="flex gap-2">
                     <Input
                       type="text"
                       placeholder="#FFFFFF"
                       value={customBgColor}
-                      onChange={(e) => setCustomBgColor(e.target.value)}
+                      onChange={(e) => setCustomBgColor(normalizeHexInput(e.target.value))}
                       maxLength={7}
                     />
                     <Button
+                      type="button"
                       size="sm"
-                      onClick={() => applyCustomColor('background', customBgColor)}
-                      disabled={!customBgColor.match(/^#?[0-9A-Fa-f]{6}$/)}
+                      variant="outline"
+                      onClick={() => setCustomBgColor('')}
+                      disabled={!customBgColor}
                     >
-                      Apply
+                      Clear
                     </Button>
                   </div>
-                </div>
+                </form>
               </TabsContent>
 
               <TabsContent value="accent" className="space-y-3">
                 <Label>Accent Color</Label>
-                <p className="text-xs text-gray-600">Controls panel heading bars and content accents. Heading text colour is auto-calculated for legibility.</p>
-                <div className="grid grid-cols-4 gap-2">
+                <p className="text-xs text-gray-600">Controls panel heading bars and content accents. Text colour is auto-calculated for legibility.</p>
+                <div className="grid grid-cols-6 gap-1.5">
                   {ACCENT_COLORS.map((color) => (
                     <button
                       key={color.value}
                       onClick={() => updateSettings({ accentColor: color.value })}
-                      className={`h-10 rounded-md border-2 transition-all ${
+                      className={`aspect-square rounded-[5px] border transition-all ${
                         settings.accentColor === color.value
-                          ? 'border-black scale-95'
-                          : 'border-gray-300 hover:border-gray-400'
+                          ? 'border-black ring-2 ring-black ring-offset-1 scale-95'
+                          : 'border-transparent hover:border-gray-400'
                       }`}
                       style={{ backgroundColor: color.value }}
                       title={color.name}
                     />
                   ))}
                 </div>
-                <div className="pt-2 space-y-2">
+                <form className="pt-2 space-y-2" onSubmit={(e) => { e.preventDefault(); if (customAccentColor.match(/^#?[0-9A-Fa-f]{6}$/)) applyCustomColor('accent', customAccentColor); }}>
                   <Label className="text-xs">Custom HEX</Label>
                   <div className="flex gap-2">
                     <Input
                       type="text"
                       placeholder="#4A4A4A"
                       value={customAccentColor}
-                      onChange={(e) => setCustomAccentColor(e.target.value)}
+                      onChange={(e) => setCustomAccentColor(normalizeHexInput(e.target.value))}
                       maxLength={7}
                     />
                     <Button
+                      type="button"
                       size="sm"
-                      onClick={() => applyCustomColor('accent', customAccentColor)}
-                      disabled={!customAccentColor.match(/^#?[0-9A-Fa-f]{6}$/)}
+                      variant="outline"
+                      onClick={() => setCustomAccentColor('')}
+                      disabled={!customAccentColor}
                     >
-                      Apply
+                      Clear
                     </Button>
                   </div>
-                </div>
+                </form>
               </TabsContent>
 
               <TabsContent value="button" className="space-y-3">
                 <Label>Button Color</Label>
                 <p className="text-xs text-gray-600">Controls buttons, checkboxes and radio indicators. Text colour is auto-calculated for legibility.</p>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-6 gap-1.5">
                   {BUTTON_COLORS.map((color) => (
                     <button
                       key={color.value}
                       onClick={() => updateSettings({ buttonColor: color.value })}
-                      className={`h-10 rounded-md border-2 transition-all ${
+                      className={`aspect-square rounded-[5px] border transition-all ${
                         settings.buttonColor === color.value
-                          ? 'border-black scale-95'
-                          : 'border-gray-300 hover:border-gray-400'
+                          ? 'border-black ring-2 ring-black ring-offset-1 scale-95'
+                          : 'border-transparent hover:border-gray-400'
                       }`}
                       style={{ backgroundColor: color.value }}
                       title={color.name}
                     />
                   ))}
                 </div>
-                <div className="pt-2 space-y-2">
+                <form className="pt-2 space-y-2" onSubmit={(e) => { e.preventDefault(); if (customButtonColor.match(/^#?[0-9A-Fa-f]{6}$/)) applyCustomColor('button', customButtonColor); }}>
                   <Label className="text-xs">Custom HEX</Label>
                   <div className="flex gap-2">
                     <Input
                       type="text"
                       placeholder="#000000"
                       value={customButtonColor}
-                      onChange={(e) => setCustomButtonColor(e.target.value)}
+                      onChange={(e) => setCustomButtonColor(normalizeHexInput(e.target.value))}
                       maxLength={7}
                     />
                     <Button
+                      type="button"
                       size="sm"
-                      onClick={() => applyCustomColor('button', customButtonColor)}
-                      disabled={!customButtonColor.match(/^#?[0-9A-Fa-f]{6}$/)}
+                      variant="outline"
+                      onClick={() => setCustomButtonColor('')}
+                      disabled={!customButtonColor}
                     >
-                      Apply
+                      Clear
                     </Button>
                   </div>
-                </div>
+                </form>
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -393,7 +401,7 @@ export function CustomizationPanel({ onClose, onSettingsChange, currentSettings 
               buttonStyle: 'rounded',
               backgroundColor: '#FFFFFF',
               buttonColor: '#000000',
-              accentColor: '#4A4A4A',
+              accentColor: '#D9D9D9',
             };
             setSettings(defaultSettings);
             onSettingsChange(defaultSettings);
