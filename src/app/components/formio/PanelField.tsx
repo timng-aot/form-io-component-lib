@@ -22,10 +22,10 @@ export function PanelField({ title, description, children }: PanelFieldProps) {
   const headerFontStyle = HEADER_FONTS[headerFont];
 
   return (
-    <div className="rounded-lg border">
+    <div className="rounded-lg border overflow-hidden" style={{ borderColor: accentColor }}>
       {/* Accent heading bar */}
       <div
-        className="px-4 py-2 rounded-t-lg"
+        className="px-4 py-2"
         style={{ backgroundColor: accentColor }}
       >
         <h3 className="font-medium" style={{

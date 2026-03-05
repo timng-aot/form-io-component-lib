@@ -418,7 +418,6 @@ export default function App() {
                           <h3 className="text-lg mb-3">Panel</h3>
                           <PanelField
                             title="Personal Information"
-                            description="Please provide your personal details"
                           >
                             <div className="space-y-4">
                               <TextField label="First Name" placeholder="John" />

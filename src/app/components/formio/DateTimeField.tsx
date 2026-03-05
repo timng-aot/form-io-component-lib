@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Label } from '../ui/label';
 import { Calendar } from '../ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Button } from '../ui/button';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useCustomization } from '../CustomizationContext';
@@ -87,10 +85,34 @@ export function DateTimeField({
   onChange,
 }: DateTimeFieldProps) {
   const [internalValue, setInternalValue] = useState<Date | undefined>();
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const isControlled = value !== undefined;
   const currentValue = isControlled ? value : internalValue;
   const { buttonColor } = useCustomization();
   const buttonTextColor = getContrastColor(buttonColor);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [open]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [open]);
 
   const handleChange = (date: Date | undefined) => {
     if (!date) {
@@ -98,7 +120,6 @@ export function DateTimeField({
       onChange?.(undefined);
       return;
     }
-    // Preserve existing time when picking a new date
     const merged = new Date(date);
     if (currentValue) {
       merged.setHours(currentValue.getHours(), currentValue.getMinutes(), 0, 0);
@@ -122,43 +143,43 @@ export function DateTimeField({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </Label>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-full justify-start text-left"
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {currentValue ? (
-              format(currentValue, 'MMM d, yyyy h:mm a')
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
-          <Calendar
-            mode="single"
-            selected={currentValue}
-            onSelect={handleChange}
-            initialFocus
-            classNames={{
-              day_today:
-                'border-2 border-foreground bg-transparent text-foreground font-medium',
-              day_selected:
-                'text-white hover:text-white focus:text-white',
-              day_outside: 'text-muted-foreground opacity-50',
-            }}
-            modifiersStyles={{
-              selected: {
-                backgroundColor: buttonColor,
-                color: buttonTextColor,
-              },
-            }}
-          />
-          <TimePicker date={currentValue} onTimeChange={handleTimeChange} />
-        </PopoverContent>
-      </Popover>
+      <div ref={containerRef} className="relative">
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex w-full items-center justify-start rounded-md border border-input bg-background px-4 py-2 text-sm font-normal text-left hover:bg-accent hover:text-accent-foreground"
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {currentValue ? (
+            format(currentValue, 'MMM d, yyyy h:mm a')
+          ) : (
+            <span className="text-muted-foreground">Pick a date</span>
+          )}
+        </button>
+        {open && (
+          <div className="absolute left-1/2 z-50 mt-1 -translate-x-1/2 rounded-md border bg-popover p-0 text-popover-foreground shadow-md">
+            <Calendar
+              mode="single"
+              selected={currentValue}
+              onSelect={handleChange}
+              classNames={{
+                day_today:
+                  'border-2 border-foreground bg-transparent text-foreground font-medium',
+                day_selected:
+                  'text-white hover:text-white focus:text-white',
+                day_outside: 'text-muted-foreground opacity-50',
+              }}
+              modifiersStyles={{
+                selected: {
+                  backgroundColor: buttonColor,
+                  color: buttonTextColor,
+                },
+              }}
+            />
+            <TimePicker date={currentValue} onTimeChange={handleTimeChange} />
+          </div>
+        )}
+      </div>
       {description && (
         <p className="text-sm text-gray-500">{description}</p>
       )}
